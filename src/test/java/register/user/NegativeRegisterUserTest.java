@@ -19,10 +19,10 @@ import static org.hamcrest.Matchers.equalTo;
 public class NegativeRegisterUserTest {
 
     private static String token;
-    private static GetListUser list = new GetListUser();
-    private static String email = list.dataForRegister().get(0);
-    private static String password = list.dataForRegister().get(1);
-    private static String name = list.dataForRegister().get(2);
+    private static final GetListUser list = new GetListUser();
+    private static final String email = list.dataForRegister().get(0);
+    private static final String password = list.dataForRegister().get(1);
+    private static final String name = list.dataForRegister().get(2);
 
 
     @BeforeClass
@@ -30,12 +30,9 @@ public class NegativeRegisterUserTest {
     public static void startTest() {
 
         PostRegister registerUser = new PostRegister();
-        ValidatableResponse response = registerUser.registerUser
-                        (new User(email, password, name))
-                .statusCode(HttpStatus.SC_OK);
-
-        token = response.extract().path("accessToken");
-
+        token = registerUser.registerUser(new User(email, password, name))
+                .statusCode(HttpStatus.SC_OK)
+                .extract().path("accessToken");
     }
 
     @AfterClass
@@ -43,12 +40,8 @@ public class NegativeRegisterUserTest {
     public static void endTests() {
 
         DeleteUser deleteUser = new DeleteUser();
-        ValidatableResponse response = deleteUser.deleteUser(token)
+        deleteUser.deleteUser(token)
                 .statusCode(HttpStatus.SC_ACCEPTED);
-
-        assertThat(
-                response.extract().path("success"),
-                equalTo(true));
     }
 
     @Test
