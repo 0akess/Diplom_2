@@ -4,7 +4,7 @@ import org.apache.http.HttpStatus;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import site.stellarburgers.nomoreparties.data.GetListUser;
+import site.stellarburgers.nomoreparties.data.GetDataUser;
 import site.stellarburgers.nomoreparties.model.User;
 import site.stellarburgers.nomoreparties.requests.user.DeleteUser;
 import site.stellarburgers.nomoreparties.requests.user.PostLoginUser;
@@ -17,17 +17,15 @@ import static org.hamcrest.Matchers.equalTo;
 public class LoginUserTest {
 
     private static String token;
-    private static final GetListUser list = new GetListUser();
-    private static final String email = list.dataForRegister().get(0);
-    private static final String password = list.dataForRegister().get(1);
-    private static final String name = list.dataForRegister().get(2);
+    private static final GetDataUser data = new GetDataUser();
+    private static final String email = data.dataForRegister().get(0);
+    private static final String password = data.dataForRegister().get(1);
+    private static final String name = data.dataForRegister().get(2);
 
     @BeforeClass
-    @DisplayName("Создаем пользователя для тетсов")
+    @DisplayName("Создаем пользователя для тестов")
     public static void startTest() {
-
-        PostRegister registerUser = new PostRegister();
-        token = registerUser.registerUser(new User(email, password, name))
+        token = new PostRegister().registerUser(new User(email, password, name))
                 .statusCode(HttpStatus.SC_OK)
                 .extract().path("accessToken");
     }
@@ -35,9 +33,7 @@ public class LoginUserTest {
     @AfterClass
     @DisplayName("Удаляем тестового пользователя")
     public static void endTests() {
-
-        DeleteUser deleteUser = new DeleteUser();
-        deleteUser.deleteUser(token)
+        new DeleteUser().deleteUser(token)
                 .statusCode(HttpStatus.SC_ACCEPTED);
     }
 
@@ -53,7 +49,6 @@ public class LoginUserTest {
         assertThat(
                 response.extract().path("success"),
                 equalTo(true));
-
     }
 
     @Test
@@ -61,9 +56,9 @@ public class LoginUserTest {
     public void loginUser_WithSameData_Error() {
 
         PostLoginUser login = new PostLoginUser();
-        GetListUser list = new GetListUser();
-        String email = list.dataForRegister().get(0);
-        String password = list.dataForRegister().get(1);
+        GetDataUser data = new GetDataUser();
+        String email = data.dataForRegister().get(0);
+        String password = data.dataForRegister().get(1);
 
         ValidatableResponse response = login.loginUser
                 (new User(email, password)).statusCode(HttpStatus.SC_UNAUTHORIZED);
@@ -78,8 +73,8 @@ public class LoginUserTest {
     public void loginUser_WithSameEmail_Error() {
 
         PostLoginUser login = new PostLoginUser();
-        GetListUser list = new GetListUser();
-        String email = list.dataForRegister().get(0);
+        GetDataUser data = new GetDataUser();
+        String email = data.dataForRegister().get(0);
 
         ValidatableResponse response = login.loginUser
                 (new User(email, password)).statusCode(HttpStatus.SC_UNAUTHORIZED);
@@ -94,8 +89,8 @@ public class LoginUserTest {
     public void loginUser_WithSamePassword_Error() {
 
         PostLoginUser login = new PostLoginUser();
-        GetListUser list = new GetListUser();
-        String password = list.dataForRegister().get(1);
+        GetDataUser data = new GetDataUser();
+        String password = data.dataForRegister().get(1);
 
         ValidatableResponse response = login.loginUser
                 (new User(email, password)).statusCode(HttpStatus.SC_UNAUTHORIZED);

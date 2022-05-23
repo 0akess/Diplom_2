@@ -5,7 +5,7 @@ import io.restassured.response.ValidatableResponse;
 import org.apache.http.HttpStatus;
 import org.junit.After;
 import org.junit.Test;
-import site.stellarburgers.nomoreparties.data.GetListUser;
+import site.stellarburgers.nomoreparties.data.GetDataUser;
 import site.stellarburgers.nomoreparties.model.User;
 import site.stellarburgers.nomoreparties.requests.user.DeleteUser;
 import site.stellarburgers.nomoreparties.requests.user.PostRegister;
@@ -13,17 +13,16 @@ import site.stellarburgers.nomoreparties.requests.user.PostRegister;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-
 @DisplayName("Позитивный набор тестов на ручку PostRegisterUser")
 public class PositiveRegisterUserTest {
 
     private static String token;
 
     @Test
-    @DisplayName("Позитивная првоерка регистрации")
+    @DisplayName("Позитивная проверка регистрации")
     public void registerUser_Success() {
 
-        GetListUser list = new GetListUser();
+        GetDataUser list = new GetDataUser();
         PostRegister registerUser = new PostRegister();
         ValidatableResponse response = registerUser.registerUser
                         (new User(
@@ -39,16 +38,10 @@ public class PositiveRegisterUserTest {
                 equalTo(true));
     }
 
-    @DisplayName("Удаляем созданного тестами пользователя")
     @After
+    @DisplayName("Удаляем тестового пользователя")
     public void endTests() {
-
-        DeleteUser deleteUser = new DeleteUser();
-        ValidatableResponse response = deleteUser.deleteUser(token)
+        new DeleteUser().deleteUser(token)
                 .statusCode(HttpStatus.SC_ACCEPTED);
-
-        assertThat(
-                response.extract().path("success"),
-                equalTo(true));
     }
 }

@@ -4,7 +4,7 @@ import org.apache.http.HttpStatus;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import site.stellarburgers.nomoreparties.data.GetListUser;
+import site.stellarburgers.nomoreparties.data.GetDataUser;
 import site.stellarburgers.nomoreparties.model.Ingredients;
 import site.stellarburgers.nomoreparties.model.User;
 import site.stellarburgers.nomoreparties.requests.order.PostCreateOrder;
@@ -14,22 +14,19 @@ import site.stellarburgers.nomoreparties.requests.user.PostRegister;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-
 @DisplayName("Набор тестов на ручку PostCreateOrder")
 public class CreateOrderTest {
 
     private static String token;
-    private static final GetListUser list = new GetListUser();
+    private static final GetDataUser list = new GetDataUser();
     private static final String email = list.dataForRegister().get(0);
     private static final String password = list.dataForRegister().get(1);
     private static final String name = list.dataForRegister().get(2);
 
     @BeforeClass
-    @DisplayName("Создаем пользователя для тетсов")
+    @DisplayName("Создаем пользователя для тестов")
     public static void startTest() {
-
-        PostRegister registerUser = new PostRegister();
-        token = registerUser.registerUser(new User(email, password, name))
+        token = new PostRegister().registerUser(new User(email, password, name))
                 .statusCode(HttpStatus.SC_OK)
                 .extract().path("accessToken");
     }
@@ -37,9 +34,7 @@ public class CreateOrderTest {
     @AfterClass
     @DisplayName("Удаляем тестового пользователя")
     public static void endTests() {
-
-        DeleteUser deleteUser = new DeleteUser();
-        deleteUser.deleteUser(token)
+        new DeleteUser().deleteUser(token)
                 .statusCode(HttpStatus.SC_ACCEPTED);
     }
 
@@ -58,7 +53,7 @@ public class CreateOrderTest {
     }
 
     @Test
-    @DisplayName("Позитивная проверка создания заказа с ингридиентами")
+    @DisplayName("Позитивная проверка создания заказа с ингредиентами")
     public void createOrderWithIngredients_Success() {
 
         PostCreateOrder create = new PostCreateOrder();
@@ -92,7 +87,7 @@ public class CreateOrderTest {
     }
 
     @Test
-    @DisplayName("Негативная проверка создания заказа без ингридиентов")
+    @DisplayName("Негативная проверка создания заказа без ингредиентов")
     public void createOrderWithoutIngredients_Error() {
 
         PostCreateOrder create = new PostCreateOrder();
@@ -105,7 +100,7 @@ public class CreateOrderTest {
     }
 
     @Test
-    @DisplayName("Негативная проверка создания заказа с неверным хешом ингридиента")
+    @DisplayName("Негативная проверка создания заказа с неверным хешом ингредиента")
     public void createOrderWithIncorrectHash_Error() {
 
         PostCreateOrder create = new PostCreateOrder();

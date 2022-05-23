@@ -5,7 +5,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetListUser {
+public class GetDataUser {
 
     /**
      * Метод отдает лист поля
@@ -21,5 +21,9 @@ public class GetListUser {
         list.add(RandomStringUtils.randomAlphabetic(10));
 
         return list;
+    }
+
+    public String getRandomToken(){
+        return RandomStringUtils.randomAlphabetic(25);
     }
 }
